@@ -12,7 +12,7 @@ const {chromium}=require('playwright'),fs=require('fs');
   try{r.navigation=(await p.goto(target,{waitUntil:'domcontentloaded',timeout:35000}))?.status();await p.waitForTimeout(9000);r.final=p.url();r.dom=await p.evaluate(()=>({body:document.body.innerText.slice(0,1800),tables:Array.from(document.querySelectorAll('table')).map(x=>({headers:Array.from(x.querySelectorAll('th')).map(v=>v.innerText),rows:x.querySelectorAll('tbody tr').length})).slice(0,8)}));}catch(e){r.error=String(e)}
   if(target.endsWith('/trades')){
     r.footer=await p.evaluate(()=>document.querySelector('.v-data-table-footer')?.outerHTML.slice(0,9000)||'NOT_FOUND');
-    const selector='.v-data-table-footer__next-page';
+    const selector='.v-pagination__next button[aria-label="Следующая страница"]';
     try {
       const button=p.locator(selector).first();
       if(await button.count()){
