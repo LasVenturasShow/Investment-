@@ -11,11 +11,12 @@ async function fetchJson(url) {
   } finally { clearTimeout(timer); }
 }
 (async()=>{
- const ids = new Set(), perPage = 100; let offset = 0, total = null;
+ const ids = new Set(), perPage = 100; let pageIndex = 0, total = null;
  while(true) {
-  const params = new URLSearchParams({offset: String(offset),limit: String(perPage),showLinkedMoneyTrades:'false',showMoneyTrades:'true',calculateSubTotal:'true',sortColumn:'DATE',descending:'true'});
+  const params = new URLSearchParams({offset: String(pageIndex),limit: String(perPage),showLinkedMoneyTrades:'false',showMoneyTrades:'true',calculateSubTotal:'true',sortColumn:'DATE',descending:'true'});
   const page = await fetchJson(`${ROOT}/trades/${ID}?${params}`);
-  assert.equal(page.offset, offset);
+  assert.equal(page.offset, pageIndex);
+  assert.equal(page.pageNumber, pageIndex);
   assert.ok(Number.isInteger(page.totalItems) && page.totalItems > 0);
   if(total === null) total = page.totalItems;
   assert.equal(page.totalItems, total);
@@ -26,9 +27,9 @@ async function fetchJson(url) {
     assert.ok(item.operationLabel && item.date);
     ids.add(item.id);
   }
-  offset += page.content.length;
-  assert.ok(offset <= total && offset < 20000);
-  if(offset === total) break;
+  assert.ok(ids.size <= total && ids.size < 20000);
+  if(ids.size === total) break;
+  pageIndex++;
  }
  const overview = await fetchJson(`${ROOT}/portfolios/${ID}/overview`);
  assert.ok(Array.isArray(overview.rows));

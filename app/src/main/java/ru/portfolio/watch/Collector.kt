@@ -52,27 +52,28 @@ class Collector(private val context: Context) {
         val records = ArrayList<TradeRow>()
         val ids = HashSet<String>()
         var expected = -1
-        var offset = 0
+        var pageIndex = 0
         var firstPage: List<TradeRow> = emptyList()
         var requests = 0
         while (true) {
             if (++requests > 150 || System.currentTimeMillis() - started > 85000L) {
-                error("Превышен лимит загрузки истории: $offset операций из $expected")
+                error("Превышен лимит загрузки истории: ${records.size} операций из $expected")
             }
-            val payload = request(tradesQuery(offset))
+            val payload = request(tradesQuery(pageIndex))
             val total = payload.optInt("totalItems", -1)
             if (total <= 0 || total > 20000) error("Некорректное общее количество сделок: $total")
             if (expected < 0) expected = total
             if (expected != total) error("История изменилась при загрузке ($expected → $total). Повторите проверку")
-            if (payload.optInt("offset", -1) != offset) error("Сервер вернул неверную страницу при смещении $offset")
+            if (payload.optInt("offset", -1) != pageIndex || payload.optInt("pageNumber", -1) != pageIndex)
+                error("Сервер вернул неверную страницу: ожидалась $pageIndex")
             val content = payload.optJSONArray("content") ?: error("В ответе отсутствует список сделок")
             if (content.length() == 0 || content.length() > 100) error("Неверное число записей на странице: ${content.length()}")
             val page = ArrayList<TradeRow>(content.length())
             for (i in 0 until content.length()) {
-                val o = content.optJSONObject(i) ?: error("Некорректная сделка на странице $offset")
+                val o = content.optJSONObject(i) ?: error("Некорректная сделка на странице $pageIndex")
                 val id = o.optLong("id", 0L)
                 if (id <= 0L || o.optLong("portfolioId", 0L) != PORTFOLIO_ID.toLong()) {
-                    error("Неверный ID сделки или портфеля на странице $offset")
+                    error("Неверный ID сделки или портфеля на странице $pageIndex")
                 }
                 if (!ids.add(id.toString())) error("Дублирующаяся сделка #$id: возможен сдвиг пагинации")
                 val date = o.optString("date").trim()
@@ -93,10 +94,10 @@ class Collector(private val context: Context) {
                 ))
                 page += row
             }
-            if (offset == 0) firstPage = page
+            if (pageIndex == 0) firstPage = page
             records.addAll(page)
-            offset = records.size
-            if (offset >= expected) break
+            if (records.size >= expected) break
+            pageIndex++
         }
         if (records.size != expected) error("Получено ${records.size} из $expected сделок — снимок не сохранён")
         // Guard against newly inserted/backdated trades during multi-page reads.
