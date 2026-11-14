@@ -7,11 +7,11 @@ android {
     namespace = "ru.portfolio.watch"
     compileSdk = 35
     defaultConfig {
-        applicationId = "ru.portfolio.watch.rub"
+        applicationId = "ru.portfolio.watch.rub.openpnl"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.3.1-beta"
+        versionCode = 5
+        versionName = "0.4.0-beta"
     }
     buildFeatures { compose = true }
     compileOptions {
@@ -29,4 +29,5 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    testImplementation("junit:junit:4.13.2")
 }

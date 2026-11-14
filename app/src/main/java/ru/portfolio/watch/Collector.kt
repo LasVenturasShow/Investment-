@@ -17,7 +17,10 @@ data class Holding(
     val name: String,
     val percent: Double,
     val quantity: String = "",
-    val marketValueRub: String? = null
+    val marketValueRub: String? = null,
+    val openInvestedRub: String? = null,
+    val openProfitRub: String? = null,
+    val openProfitPercent: String? = null
 )
 data class Capture(
     val trades: List<TradeRow>,
@@ -158,7 +161,16 @@ class Collector(private val context: Context) {
             val marketValue = RubValues.fromApi(row.optString("currCost"))
                 ?: error("Нет стоимости в RUB у актива $ticker")
             if (marketValue.signum() < 0) error("Отрицательная стоимость у актива $ticker")
-            out += Holding(ticker, name.take(100), weight, qty, marketValue.toPlainString())
+            // "profit" / "percProfit" include realized historical P&L; do not use them
+            // for the result of the *currently open* position.
+            val invested = RubValues.fromApi(row.optString("openPositionInvestedAmount"))
+            val openResult = RubValues.openPositionResult(marketValue, invested)
+            out += Holding(
+                ticker, name.take(100), weight, qty, marketValue.toPlainString(),
+                invested?.toPlainString(),
+                openResult?.profitRub?.toPlainString(),
+                openResult?.percent?.toPlainString()
+            )
         }
         val sum = out.sumOf { it.percent }
         if (out.isEmpty() || sum !in 98.0..102.0) {

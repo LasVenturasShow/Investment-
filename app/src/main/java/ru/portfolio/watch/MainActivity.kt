@@ -155,7 +155,7 @@ private fun PortfolioScreen(
         SurfaceCard {
             Text("Структура активов", fontSize = 19.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(5.dp))
-            Text("Доли по данным опубликованного портфеля", color = subtle, fontSize = 12.sp)
+            Text("Стоимость, доля и результат открытых позиций", color = subtle, fontSize = 12.sp)
             if (state.holdings.isEmpty()) {
                 Spacer(Modifier.height(24.dp))
                 Box(Modifier.fillMaxWidth().height(90.dp), contentAlignment = Alignment.Center) {
@@ -170,17 +170,34 @@ private fun PortfolioScreen(
                         Box(Modifier.size(10.dp).background(shades[index % shades.size], RoundedCornerShape(3.dp)))
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f)) {
-                            Text(h.ticker, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            if (h.name != h.ticker) Text(h.name, color = subtle, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(h.ticker, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            if (h.name != h.ticker) Text(h.name, color = subtle, fontSize = 11.sp,
+                                maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text("Стоимость: ${RubValues.display(h.marketValueRub)}",
+                                color = subtle, fontSize = 12.sp)
                         }
                         Spacer(Modifier.width(8.dp))
                         Column(horizontalAlignment = Alignment.End) {
-                            Text(RubValues.display(h.marketValueRub), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-                            Text(String.format(Locale("ru", "RU"), "%.1f%%", h.percent),
-                                color = subtle, fontWeight = FontWeight.Medium, fontSize = 12.sp)
+                            val change = h.openProfitRub?.toBigDecimalOrNull()
+                            val changeColor = when {
+                                change == null -> subtle
+                                change.signum() > 0 -> success
+                                change.signum() < 0 -> alert
+                                else -> subtle
+                            }
+                            Text(RubValues.displaySignedRub(h.openProfitRub),
+                                color = changeColor, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            Text(RubValues.displaySignedPercent(h.openProfitPercent),
+                                color = changeColor, fontWeight = FontWeight.Medium, fontSize = 13.sp)
+                            Text(String.format(Locale("ru", "RU"), "Доля %.1f%%", h.percent),
+                                color = subtle, fontSize = 11.sp)
                         }
                     }
                 }
+                Spacer(Modifier.height(8.dp))
+                Text("Прибыль/убыток: текущая стоимость минус вложения в открытый остаток. Закрытые сделки не учитываются.",
+                    color = subtle, fontSize = 11.sp, lineHeight = 16.sp)
                 Text("Данные диаграммы: ${dateText(state.holdingsCheckedAt)}", color = subtle, fontSize = 11.sp)
             }
         }

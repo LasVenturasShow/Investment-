@@ -49,6 +49,20 @@ async function fetchJson(url) {
  assert.ok(Math.abs(assetsTotal-totalFromApi) <= Math.max(100, 0.02*totalFromApi),
    `Portfolio value mismatch: total=${totalFromApi}, assets=${assetsTotal}`);
  assert.ok(typeof positions[0].currCost === 'string');
+ const gains = positions.map(row => {
+   const invested = parseRub(row.openPositionInvestedAmount);
+   const current = parseRub(row.currCost);
+   assert.ok(invested > 0 && current >= 0, `Invalid open position for ${row.share.ticker}`);
+   const amount = current - invested;
+   const pct = 100 * amount / invested;
+   return {ticker:row.share.ticker, amount, pct};
+ });
+ assert.equal(gains.length, positions.length);
+ for(const gain of gains)assert.ok(Number.isFinite(gain.amount) && Number.isFinite(gain.pct));
+ const mtss = gains.find(g=>g.ticker==='MTSS');
+ if(mtss) console.log('MTSS: current open-position gain (RUB):', mtss.amount.toFixed(2),
+   'percent:', mtss.pct.toFixed(2));
+ console.log('Open position gains checked:', gains.length);
  console.log(JSON.stringify({result:'PASS',portfolio:ID,trades:ids.size,activePositions:positions.length,allocationPercent:sum.toFixed(2),valueRub:totalFromApi.toFixed(2),
    sampleHoldingRub:parseRub(positions[0].currCost).toFixed(2),names:positions.slice(0,3).map(r=>[r.share.ticker,r.share.name])},null,2));
 })().catch(error=>{console.error('Public API smoke test FAILED:',error.message);process.exitCode=1});

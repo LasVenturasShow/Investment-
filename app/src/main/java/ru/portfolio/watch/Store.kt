@@ -192,11 +192,17 @@ fun jsonToTrades(arr: JSONArray): List<TradeRow> = (0 until arr.length()).map { 
 }
 fun holdingsToJson(rows: List<Holding>): JSONArray = JSONArray().apply {
     rows.forEach { put(JSONObject().put("ticker", it.ticker).put("name", it.name).put("percent", it.percent).put("quantity", it.quantity)
-            .put("marketValueRub", it.marketValueRub ?: JSONObject.NULL)) }
+            .put("marketValueRub", it.marketValueRub ?: JSONObject.NULL)
+            .put("openInvestedRub", it.openInvestedRub ?: JSONObject.NULL)
+            .put("openProfitRub", it.openProfitRub ?: JSONObject.NULL)
+            .put("openProfitPercent", it.openProfitPercent ?: JSONObject.NULL)) }
 }
 fun jsonToHoldings(arr: JSONArray): List<Holding> = (0 until arr.length()).map { i ->
     val o = arr.getJSONObject(i)
     Holding(o.getString("ticker"), o.getString("name"), o.getDouble("percent"),
         o.optString("quantity", ""),
-        if (o.isNull("marketValueRub")) null else o.optString("marketValueRub").takeIf { it.isNotBlank() })
+        if (o.isNull("marketValueRub")) null else o.optString("marketValueRub").takeIf { it.isNotBlank() },
+        if (o.isNull("openInvestedRub")) null else o.optString("openInvestedRub").takeIf { it.isNotBlank() },
+        if (o.isNull("openProfitRub")) null else o.optString("openProfitRub").takeIf { it.isNotBlank() },
+        if (o.isNull("openProfitPercent")) null else o.optString("openProfitPercent").takeIf { it.isNotBlank() })
 }
