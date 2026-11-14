@@ -1,0 +1,30 @@
+name: Inspect public portfolio profit fields
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/inspect-profit.cjs
+      - .github/workflows/inspect-profit.yml
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify and inspect open holdings profit fields
+        run: node tools/inspect-profit.cjs
+      - name: Record public diagnostics
+        run: |
+          git config user.name "Portfolio Watch CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add diagnostics/active-positions-profit-fields.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record public portfolio profit field inspection [skip ci]"
+            git push origin HEAD:main
+          fi
