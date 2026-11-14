@@ -50,13 +50,22 @@ class PortfolioStore(context: Context) {
             val changes = (if (prior == null) emptyList() else DiffCore.compare(prior, capture.trades)).toMutableList()
             val previousHoldings = readPriorHoldings(database)
             if (previousHoldings != null && capture.holdings.isNotEmpty()) {
-                // Market price/percentage changes are NOT trades; only appearance/disappearance of an asset is reported.
+                // Market price/percentage changes are NOT trades; quantity changes are reported separately.
                 val previous = previousHoldings.associateBy { it.ticker.trim().uppercase() }
                 val current = capture.holdings.associateBy { it.ticker.trim().uppercase() }
                 for ((key, asset) in current) if (key !in previous) changes +=
                     PortfolioChange("POSITION_ADDED", "Новый актив в составе", "${asset.ticker} · ${asset.name}")
                 for ((key, asset) in previous) if (key !in current) changes +=
                     PortfolioChange("POSITION_REMOVED", "Актив исчез из состава", "${asset.ticker} · ${asset.name}")
+                for ((key, asset) in current) {
+                    val before = previous[key] ?: continue
+                    val oldQty = before.quantity.toBigDecimalOrNull()
+                    val newQty = asset.quantity.toBigDecimalOrNull()
+                    if (oldQty != null && newQty != null && oldQty.compareTo(newQty) != 0) {
+                        changes += PortfolioChange("POSITION_CHANGED", "Изменилось количество актива",
+                            "${asset.ticker} · ${before.quantity} → ${asset.quantity}")
+                    }
+                }
             }
             database.insertOrThrow("snapshots", null, ContentValues().apply {
                 put("timestamp_ms", timestamp)
@@ -141,9 +150,9 @@ fun jsonToTrades(arr: JSONArray): List<TradeRow> = (0 until arr.length()).map { 
     TradeRow(if (o.isNull("id")) null else o.getString("id"), (0 until cells.length()).map { cells.getString(it) })
 }
 fun holdingsToJson(rows: List<Holding>): JSONArray = JSONArray().apply {
-    rows.forEach { put(JSONObject().put("ticker", it.ticker).put("name", it.name).put("percent", it.percent)) }
+    rows.forEach { put(JSONObject().put("ticker", it.ticker).put("name", it.name).put("percent", it.percent).put("quantity", it.quantity)) }
 }
 fun jsonToHoldings(arr: JSONArray): List<Holding> = (0 until arr.length()).map { i ->
     val o = arr.getJSONObject(i)
-    Holding(o.getString("ticker"), o.getString("name"), o.getDouble("percent"))
+    Holding(o.getString("ticker"), o.getString("name"), o.getDouble("percent"), o.optString("quantity", ""))
 }

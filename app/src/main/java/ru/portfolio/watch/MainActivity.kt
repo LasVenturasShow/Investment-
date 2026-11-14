@@ -105,7 +105,7 @@ private fun PortfolioScreen(
     Column(Modifier.fillMaxSize().background(background).statusBarsPadding().navigationBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)) {
         Text("PORTFOLIO WATCH", color = primary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 2.sp)
-        Text("Мой портфель", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text("Портфель под наблюдением", color = Color(0xFFF1F4F8), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text("IntelInvest  ·  781662", color = subtle, fontSize = 13.sp)
 
         SurfaceCard {

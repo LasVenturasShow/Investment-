@@ -2,7 +2,8 @@ package ru.portfolio.watch
 
 /** Pure Kotlin comparison logic: testable without Android. Does not infer trades from price changes. */
 data class TradeRow(val stableId: String?, val cells: List<String>) {
-    fun fingerprint(): String = cells.joinToString(" ␟ ") { it.trim().replace(Regex("\\s+"), " ") }
+    fun fingerprint(): String = (if (cells.size >= 11) cells.filterIndexed { index, _ -> index != 3 } else cells)
+        .joinToString(" ␟ ") { it.trim().replace(Regex("\\s+"), " ") }
     fun description(): String = cells.joinToString(" · ") { it.trim() }.take(260)
 }
 
