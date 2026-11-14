@@ -1,53 +1,16 @@
-const {chromium} = require('playwright');
-const fs = require('fs');
-const targets=[
- 'https://intelinvest.ru/public/portfolio/781662/trades',
- 'https://intelinvest.ru/public/portfolio/781662',
- 'https://intelinvest.ru/public-portfolio/781662/'
-];
+const {chromium}=require('playwright'),fs=require('fs');
 (async()=>{
- const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
- const results=[];
- for(const target of targets){
-  const context=await browser.newContext({locale:'ru-RU',viewport:{width:1400,height:1000},userAgent:'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'});
-  const page=await context.newPage();
-  const record={target,requests:[],responses:[],errors:[]};
-  page.on('request',req=>{ const u=req.url(); if(/intelinvest\.ru/.test(u)&&record.requests.length<120) record.requests.push({method:req.method(),url:u.split('?')[0].slice(0,200),kind:req.resourceType()});});
-  page.on('requestfailed',req=>{if(record.errors.length<30) record.errors.push({url:req.url().split('?')[0].slice(0,180),failure:req.failure()});});
-  page.on('response', async res=>{
-    const u=res.url();
-    if(!/intelinvest\.ru/.test(u)) return;
-    const ct=res.headers()['content-type']||'';
-    if(record.responses.length>90) return;
-    const item={url:u.split('?')[0].slice(0,200),status:res.status(),kind:res.request().resourceType(),contentType:ct.slice(0,50)};
-    if(/json/.test(ct)&&/api|portfolio|trade|public|asset|position/i.test(u)){
-      try {const body=await res.text();item.preview=body.slice(0,8000);}catch(e){item.readError=String(e).slice(0,200)}
-    }
-    record.responses.push(item);
-  });
-  try {
-   const reply=await page.goto(target,{waitUntil:'domcontentloaded',timeout:35000});
-   record.navigationStatus=reply?.status();
-   await page.waitForTimeout(14000);
-   record.finalUrl=page.url();
-   record.title=await page.title();
-   record.dom=await page.evaluate(()=>{
-    const clean=s=>String(s||'').replace(/\s+/g,' ').trim();
-    return {
-      body:clean(document.body?.innerText).slice(0,11000),
-      tables:Array.from(document.querySelectorAll('table,[role="table"],[role="grid"]')).slice(0,15).map(el=>({html:el.outerHTML.slice(0,2400),text:clean(el.innerText).slice(0,1800)})),
-      grids:Array.from(document.querySelectorAll('[role="row"],[class*="row"],[class*="Row"]')).slice(0,15).map(el=>({tag:el.tagName,cls:String(el.className).slice(0,150),text:clean(el.innerText).slice(0,300)})),
-      navLinks:Array.from(document.querySelectorAll('a[href]')).filter(x=>/portfolio|trades|сделк/i.test(x.href+' '+x.innerText)).slice(0,25).map(a=>({href:a.href.slice(0,180),text:clean(a.innerText).slice(0,90)})),
-      scripts:Array.from(document.querySelectorAll('script[src]')).map(el=>el.src.slice(0,240)).slice(0,35),
-      nextData:document.querySelector('#__NEXT_DATA__')?.textContent?.slice(0,3000)||'',
-      appRoots:Array.from(document.querySelectorAll('#root,#app,#__next')).map(el=>({id:el.id,html:el.outerHTML.slice(0,600)}))
-    };
-   });
-  } catch(e) {record.fatal=String(e);}
-  results.push(record);await context.close();
+ const b=await chromium.launch({headless:true,args:['--no-sandbox']});const results=[];
+ for(const target of ['https://intelinvest.ru/public/portfolio/781662/trades','https://intelinvest.ru/public/portfolio/781662','https://intelinvest.ru/public/portfolio/781662/assets']){
+  const ctx=await b.newContext({locale:'ru-RU'}),p=await ctx.newPage(),r={target,requests:[],responses:[]};
+  p.on('request',q=>{if(q.url().startsWith('https://intelinvest.ru/api/public/'))r.requests.push({method:q.method(),url:q.url(),post:q.postData()?.slice(0,800)})});
+  p.on('response',async q=>{if(!q.url().startsWith('https://intelinvest.ru/api/public/'))return;const o={url:q.url(),status:q.status()};try{const d=await q.json();o.keys=Object.keys(d); for(const [k,v] of Object.entries(d)){
+   if(Array.isArray(v))o[k]={count:v.length,first:v[0],last:v.at(-1)};else if(v&&typeof v==='object')o[k]={keys:Object.keys(v),first:v.content?.[0],totalElements:v.totalElements};else o[k]=v;
+  }
+  const s=JSON.stringify(o);if(s.length>30000){o.preview=s.slice(0,6000);for(const k of o.keys){if(typeof o[k]==='object')delete o[k]}}
+  }catch(e){o.error=String(e)} r.responses.push(o)});
+  try{r.navigation=(await p.goto(target,{waitUntil:'domcontentloaded',timeout:35000}))?.status();await p.waitForTimeout(9000);r.final=p.url();r.dom=await p.evaluate(()=>({body:document.body.innerText.slice(0,1800),tables:Array.from(document.querySelectorAll('table')).map(x=>({headers:Array.from(x.querySelectorAll('th')).map(v=>v.innerText),rows:x.querySelectorAll('tbody tr').length})).slice(0,8)}));}catch(e){r.error=String(e)}
+  results.push(r);await ctx.close();
  }
- await browser.close();
- fs.mkdirSync('diagnostics',{recursive:true});
- fs.writeFileSync('diagnostics/intelinvest-public-probe.json',JSON.stringify({generated:new Date().toISOString(),results},null,2));
- console.log(results.map(x=>({target:x.target,status:x.navigationStatus,final:x.finalUrl,bodyStart:x.dom?.body?.slice(0,200),responses:x.responses.length,fatal:x.fatal})));
+ await b.close();fs.mkdirSync('diagnostics',{recursive:true});fs.writeFileSync('diagnostics/intelinvest-public-probe.json',JSON.stringify({results},null,2));console.log(results.map(r=>({target:r.target,status:r.navigation,urls:r.requests.map(x=>x.url)})));
 })().catch(e=>{console.error(e);process.exitCode=1});
