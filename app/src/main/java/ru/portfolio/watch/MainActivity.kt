@@ -1,8 +1,11 @@
 package ru.portfolio.watch
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -38,12 +41,15 @@ private val shades = listOf(Color(0xFF66C5D1), Color(0xFF8B97F5), Color(0xFFF6BD
 
 class MainActivity : ComponentActivity() {
     private var model by mutableStateOf(MonitorState())
+    private var wakeStatus by mutableStateOf<WakeStatus?>(null)
     private var loading by mutableStateOf(false)
     private var message by mutableStateOf("Первое обновление создаст исходный снимок без уведомления")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = PortfolioStore(this).readState()
+        wakeStatus = PriorityWake.status(this)
+        if (model.lastChecked > 0L) message = "Снимок сохранён. Последняя проверка: " + dateText(model.lastChecked)
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 73)
         }
@@ -56,9 +62,12 @@ class MainActivity : ComponentActivity() {
                 onSurface = Color(0xFFF1F4F8),
                 onBackground = Color(0xFFF1F4F8),
             )) {
-                PortfolioScreen(model, loading, message,
+                PortfolioScreen(model, wakeStatus, loading, message,
                     onRefresh = ::refresh,
-                    onSchedule = ::saveSchedule)
+                    onSchedule = ::saveSchedule,
+                    onExactAlarmPermission = ::openExactAlarmSettings,
+                    onBatteryPermission = ::openBatterySettings,
+                    onNotificationPermission = ::openAppSettings)
             }
         }
     }
@@ -66,6 +75,31 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         model = PortfolioStore(this).readState()
+        if (model.lastChecked > 0L && message.startsWith("Первое обновление"))
+            message = "Снимок уже существует. Фоновый мониторинг работает по сохранённому расписанию."
+        runCatching { PriorityWake.ensureConfigured(this) }
+        wakeStatus = PriorityWake.status(this)
+    }
+
+    private fun openAppSettings() {
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:" + packageName)))
+    }
+
+    private fun openExactAlarmSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            runCatching {
+                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    Uri.parse("package:" + packageName)))
+            }.onFailure { openAppSettings() }
+        }
+    }
+
+    private fun openBatterySettings() {
+        runCatching {
+            startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + packageName)))
+        }.onFailure { openAppSettings() }
     }
 
     private fun refresh() {
@@ -75,6 +109,7 @@ class MainActivity : ComponentActivity() {
         MonitorEngine.run(this) { outcome ->
             loading = false
             model = PortfolioStore(this).readState()
+            wakeStatus = PriorityWake.status(this)
             message = if (outcome.isFailure) {
                 "Ошибка: ${outcome.exceptionOrNull()?.message ?: "Неизвестная проблема"}. Старый снимок сохранён."
             } else {
@@ -92,13 +127,16 @@ class MainActivity : ComponentActivity() {
         message = runCatching { MonitorEngine.configure(this, enabled, minutes) }
             .getOrElse { "Ошибка интервала: ${it.message}" }
         model = PortfolioStore(this).readState()
+        wakeStatus = PriorityWake.status(this)
     }
 }
 
 @Composable
 private fun PortfolioScreen(
-    state: MonitorState, busy: Boolean, message: String,
-    onRefresh: () -> Unit, onSchedule: (Boolean, Long) -> Unit
+    state: MonitorState, wakeStatus: WakeStatus?, busy: Boolean, message: String,
+    onRefresh: () -> Unit, onSchedule: (Boolean, Long) -> Unit,
+    onExactAlarmPermission: () -> Unit, onBatteryPermission: () -> Unit,
+    onNotificationPermission: () -> Unit
 ) {
     var input by remember(state.intervalMinutes) { mutableStateOf(state.intervalMinutes.toString()) }
     var switchState by remember(state.enabled) { mutableStateOf(state.enabled) }
@@ -246,6 +284,45 @@ private fun PortfolioScreen(
             OutlinedButton(onClick = { val n = input.toLongOrNull(); if (n != null) onSchedule(switchState, n) },
                 enabled = (input.toLongOrNull()?.let { it in 15L..10080L } == true),
                 modifier = Modifier.fillMaxWidth()) { Text("Сохранить расписание") }
+            Spacer(Modifier.height(14.dp))
+            Text("Приоритетная фоновая проверка", fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+            Text("Пробуждение в режиме сна + приоритетная проверка + резерв. Не требует зарядки, но Android может задерживать запуск.",
+                color = subtle, fontSize = 12.sp, lineHeight = 17.sp)
+            if (wakeStatus != null) {
+                Spacer(Modifier.height(10.dp))
+                Text(if (wakeStatus.exactAllowed) "Точные будильники: разрешены" else "Точные будильники: не разрешены",
+                    color = if (wakeStatus.exactAllowed) success else alert, fontSize = 12.sp)
+                if (!wakeStatus.exactAllowed)
+                    OutlinedButton(onClick = onExactAlarmPermission, modifier = Modifier.fillMaxWidth()) {
+                        Text("Разрешить точные будильники")
+                    }
+                Spacer(Modifier.height(6.dp))
+                Text(if (wakeStatus.batteryUnrestricted) "Ограничение батареи: снято" else "Ограничение батареи: действует",
+                    color = if (wakeStatus.batteryUnrestricted) success else alert, fontSize = 12.sp)
+                if (!wakeStatus.batteryUnrestricted)
+                    OutlinedButton(onClick = onBatteryPermission, modifier = Modifier.fillMaxWidth()) {
+                        Text("Разрешить работу без ограничений")
+                    }
+                Spacer(Modifier.height(6.dp))
+                Text(if (wakeStatus.notificationsAllowed) "Уведомления: разрешены" else "Уведомления: отключены",
+                    color = if (wakeStatus.notificationsAllowed) success else alert, fontSize = 12.sp)
+                if (!wakeStatus.notificationsAllowed)
+                    OutlinedButton(onClick = onNotificationPermission, modifier = Modifier.fillMaxWidth()) {
+                        Text("Открыть разрешения уведомлений")
+                    }
+                if (wakeStatus.powerSaveActive) Text("Включено энергосбережение. Возможны задержки системных задач.",
+                    color = alert, fontSize = 12.sp)
+                if (state.enabled) {
+                    Spacer(Modifier.height(10.dp))
+                    Text("Следующий сигнал: " + dateText(wakeStatus.nextDue), color = subtle, fontSize = 11.sp)
+                    Text("Последнее пробуждение: " + dateText(wakeStatus.lastWake), color = subtle, fontSize = 11.sp)
+                    Text("Последний запуск: " + dateText(wakeStatus.lastAttempt), color = subtle, fontSize = 11.sp)
+                    Text("Успешная фоновая проверка: " + dateText(wakeStatus.lastSuccess),
+                        color = subtle, fontSize = 11.sp)
+                    if (wakeStatus.lastFailure.isNotBlank())
+                        Text("Последняя ошибка: " + wakeStatus.lastFailure, color = alert, fontSize = 11.sp)
+                }
+            }
         }
         Text("Источник: intelinvest.ru/public/portfolio/781662/trades. Данные используются только локально; результаты зависят от доступности публичной страницы.",
             fontSize = 11.sp, color = subtle, lineHeight = 17.sp)
