@@ -38,5 +38,17 @@ async function fetchJson(url) {
  const sum = positions.reduce((a,row)=>a+Number(row.percCurrShareInWholePortfolio),0);
  assert.ok(sum >= 98 && sum <= 102, `Allocation sum invalid: ${sum}`);
  assert.ok(positions.every(row => row.share?.name && row.quantity!==undefined));
- console.log(JSON.stringify({result:'PASS',portfolio:ID,trades:ids.size,activePositions:positions.length,allocationPercent:sum.toFixed(2),names:positions.slice(0,3).map(r=>[r.share.ticker,r.share.name])},null,2));
+ const parseRub = value => {
+   const match = /^RUB\s+([+-]?[0-9]+(?:\.[0-9]+)?)$/.exec(String(value||'').trim());
+   assert.ok(match, `Expected RUB amount, got ${value}`);
+   return Number(match[1]);
+ };
+ const assetsTotal = positions.reduce((n,row) => n + parseRub(row.currCost),0);
+ assert.ok(assetsTotal > 0, "Asset amounts must be positive");
+ const totalFromApi = overview.sumRow?.currCost ? parseRub(overview.sumRow.currCost) : assetsTotal;
+ assert.ok(Math.abs(assetsTotal-totalFromApi) <= Math.max(100, 0.02*totalFromApi),
+   `Portfolio value mismatch: total=${totalFromApi}, assets=${assetsTotal}`);
+ assert.ok(typeof positions[0].currCost === 'string');
+ console.log(JSON.stringify({result:'PASS',portfolio:ID,trades:ids.size,activePositions:positions.length,allocationPercent:sum.toFixed(2),valueRub:totalFromApi.toFixed(2),
+   sampleHoldingRub:parseRub(positions[0].currCost).toFixed(2),names:positions.slice(0,3).map(r=>[r.share.ticker,r.share.name])},null,2));
 })().catch(error=>{console.error('Public API smoke test FAILED:',error.message);process.exitCode=1});

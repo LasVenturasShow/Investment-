@@ -55,7 +55,24 @@ object DiffCore {
             "SELL" -> "Новая продажа"
             else -> "Новая операция"
         }
-        return PortfolioChange(type, label, txt)
+        val details = if (row.cells.size >= 11) {
+            val ticker = row.cells[2].ifBlank { "Актив" }
+            val name = row.cells[3].takeIf { it.isNotBlank() && it != ticker }
+            val quantity = row.cells[4].takeIf { it.isNotBlank() }
+            val rub = RubValues.fromApi(row.cells[7])
+            val sourceAmount = row.cells[7].takeIf { it.isNotBlank() }
+            buildString {
+                append(ticker)
+                if (name != null) append(" · ").append(name)
+                append(" · ").append(row.cells[0])
+                if (quantity != null) append("\nКоличество: ").append(quantity)
+                when {
+                    rub != null -> append("\nСумма сделки: ").append(RubValues.display(rub.abs().toPlainString()))
+                    sourceAmount != null -> append("\nСумма сделки (исходная валюта): ").append(sourceAmount)
+                }
+            }
+        } else txt
+        return PortfolioChange(type, label, details)
     }
     private fun removed(row: TradeRow) = PortfolioChange("REMOVED", "Запись исчезла из истории", row.description())
 }

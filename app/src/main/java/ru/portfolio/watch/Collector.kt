@@ -12,8 +12,20 @@ const val TRADES_URL = "https://intelinvest.ru/public/portfolio/781662/trades"
 private const val API_ROOT = "https://intelinvest.ru/api/public"
 private const val PORTFOLIO_ID = 781662
 
-data class Holding(val ticker: String, val name: String, val percent: Double, val quantity: String = "")
-data class Capture(val trades: List<TradeRow>, val holdings: List<Holding>, val diagnostics: String)
+data class Holding(
+    val ticker: String,
+    val name: String,
+    val percent: Double,
+    val quantity: String = "",
+    val marketValueRub: String? = null
+)
+data class Capture(
+    val trades: List<TradeRow>,
+    val holdings: List<Holding>,
+    val diagnostics: String,
+    val portfolioValueRub: String? = null
+)
+private data class Valuation(val holdings: List<Holding>, val totalRub: String)
 
 /**
  * Public, read-only IntelInvest JSON API. No account access, cookies or embedded browser.
@@ -33,14 +45,17 @@ class Collector(private val context: Context) {
         val started = System.currentTimeMillis()
         val trades = readAllTrades(started)
         var holdings: List<Holding> = emptyList()
-        var allocationMessage = "Данные о долях временно недоступны"
+        var totalRub: String? = null
+        var allocationMessage = "Данные о стоимости временно недоступны"
         try {
-            holdings = readHoldings()
-            allocationMessage = "Активных позиций: ${holdings.size}"
+            val valuation = readHoldings()
+            holdings = valuation.holdings
+            totalRub = valuation.totalRub
+            allocationMessage = "Активных позиций: ${holdings.size}. Стоимость: ${RubValues.display(totalRub)}"
         } catch (e: Exception) {
             allocationMessage += ": " + (e.message ?: "нет ответа").take(130)
         }
-        return Capture(trades, holdings, "Сделок подтверждено: ${trades.size}. $allocationMessage")
+        return Capture(trades, holdings, "Сделок подтверждено: ${trades.size}. $allocationMessage", totalRub)
     }
 
     private fun tradesQuery(offset: Int, limit: Int = 25): String =
@@ -124,7 +139,7 @@ class Collector(private val context: Context) {
         return records
     }
 
-    private fun readHoldings(): List<Holding> {
+    private fun readHoldings(): Valuation {
         val overview = request("$API_ROOT/portfolios/$PORTFOLIO_ID/overview")
         val rows = overview.optJSONArray("rows") ?: error("В обзоре нет позиций")
         if (rows.length() == 0) error("Пустой список позиций")
@@ -140,13 +155,30 @@ class Collector(private val context: Context) {
             if (weight <= 0.0) continue
             if (weight > 100 || ticker.isBlank() || !keys.add(ticker)) error("Некорректные позиции: $ticker")
             val qty = row.optString("quantity").takeUnless { it == "null" }.orEmpty()
-            out += Holding(ticker, name.take(100), weight, qty)
+            val marketValue = RubValues.fromApi(row.optString("currCost"))
+                ?: error("Нет стоимости в RUB у актива $ticker")
+            if (marketValue.signum() < 0) error("Отрицательная стоимость у актива $ticker")
+            out += Holding(ticker, name.take(100), weight, qty, marketValue.toPlainString())
         }
         val sum = out.sumOf { it.percent }
         if (out.isEmpty() || sum !in 98.0..102.0) {
             error("Неполная структура портфеля: сумма долей $sum%")
         }
-        return out.sortedByDescending { it.percent }
+        // Prefer the portfolio-wide source total; reconcile it against individual active assets.
+        val sumRowTotal = RubValues.fromApi(
+            overview.optJSONObject("sumRow")?.optString("currCost")
+        )
+        val assetTotal = out.fold(java.math.BigDecimal.ZERO) { amount, holding ->
+            amount.add(holding.marketValueRub!!.toBigDecimal())
+        }
+        val total = sumRowTotal ?: assetTotal
+        if (total.signum() <= 0) error("Стоимость портфеля не получена")
+        val tolerance = total.multiply(java.math.BigDecimal("0.02"))
+            .max(java.math.BigDecimal("100.00"))
+        if (assetTotal.subtract(total).abs() > tolerance) {
+            error("Стоимость активов не соответствует стоимости портфеля")
+        }
+        return Valuation(out.sortedByDescending { it.percent }, total.toPlainString())
     }
 
     private fun request(address: String): JSONObject {

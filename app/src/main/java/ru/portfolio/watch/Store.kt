@@ -10,13 +10,19 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private class PortfolioDb(context: Context) : SQLiteOpenHelper(context, "portfolio_watch.db", null, 1) {
+private class PortfolioDb(context: Context) : SQLiteOpenHelper(context, "portfolio_watch.db", null, 2) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE snapshots(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, trades TEXT NOT NULL)")
         db.execSQL("CREATE TABLE positions(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, holdings TEXT NOT NULL)")
         db.execSQL("CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, type TEXT NOT NULL, label TEXT NOT NULL, description TEXT NOT NULL)")
+        createValuations(db)
     }
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = Unit
+    private fun createValuations(db: SQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS valuations(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, value_rub TEXT NOT NULL)")
+    }
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) createValuations(db)
+    }
 }
 
 data class HistoryEntry(val timestamp: Long, val change: PortfolioChange)
@@ -29,7 +35,11 @@ data class MonitorState(
     val events: List<HistoryEntry> = emptyList(),
     val status: String = "Ещё не проверялось",
     val enabled: Boolean = false,
-    val intervalMinutes: Long = 30
+    val intervalMinutes: Long = 30,
+    val portfolioValueRub: String? = null,
+    val valuationCheckedAt: Long = 0,
+    val baselineValueRub: String? = null,
+    val baselineValueAt: Long = 0
 )
 
 data class CheckOutcome(val initial: Boolean, val changes: List<PortfolioChange>, val checkedAt: Long, val diagnostic: String)
@@ -75,12 +85,26 @@ class PortfolioStore(context: Context) {
                 put("timestamp_ms", timestamp)
                 put("holdings", holdingsToJson(capture.holdings).toString())
             })
+            if (capture.portfolioValueRub != null) {
+                require(capture.portfolioValueRub.toBigDecimalOrNull()?.signum() == 1) {
+                    "Неверная стоимость портфеля в снимке"
+                }
+                database.insertOrThrow("valuations", null, ContentValues().apply {
+                    put("timestamp_ms", timestamp)
+                    put("value_rub", capture.portfolioValueRub)
+                })
+            }
             for (change in changes) database.insertOrThrow("events", null, ContentValues().apply {
                 put("timestamp_ms", timestamp)
                 put("type", change.type)
                 put("label", change.label)
-                put("description", change.description)
+                val checkedValue = capture.portfolioValueRub?.let {
+                    "\nСтоимость портфеля при проверке: ${RubValues.display(it)}"
+                }.orEmpty()
+                put("description", change.description + checkedValue)
             })
+            // Keep the first recorded valuation as the permanent baseline.
+            database.execSQL("DELETE FROM valuations WHERE id != (SELECT MIN(id) FROM valuations) AND id NOT IN (SELECT id FROM valuations ORDER BY id DESC LIMIT 2000)")
             database.execSQL("DELETE FROM snapshots WHERE id NOT IN (SELECT id FROM snapshots ORDER BY id DESC LIMIT 200)")
             database.execSQL("DELETE FROM positions WHERE id NOT IN (SELECT id FROM positions ORDER BY id DESC LIMIT 200)")
             database.setTransactionSuccessful()
@@ -107,13 +131,30 @@ class PortfolioStore(context: Context) {
                 holdings = jsonToHoldings(JSONArray(c.getString(1)))
             }
         }
+        var latestValue: String? = null
+        var latestValueAt = 0L
+        var firstValue: String? = null
+        var firstValueAt = 0L
+        database.rawQuery("SELECT timestamp_ms,value_rub FROM valuations ORDER BY id DESC LIMIT 1", null).use { c ->
+            if (c.moveToFirst()) {
+                latestValueAt = c.getLong(0)
+                latestValue = c.getString(1)
+            }
+        }
+        database.rawQuery("SELECT timestamp_ms,value_rub FROM valuations ORDER BY id ASC LIMIT 1", null).use { c ->
+            if (c.moveToFirst()) {
+                firstValueAt = c.getLong(0)
+                firstValue = c.getString(1)
+            }
+        }
         val events = mutableListOf<HistoryEntry>()
         database.rawQuery("SELECT timestamp_ms,type,label,description FROM events ORDER BY id DESC LIMIT 40", null).use { c ->
             while (c.moveToNext()) events.add(HistoryEntry(c.getLong(0), PortfolioChange(c.getString(1), c.getString(2), c.getString(3))))
         }
         return MonitorState(checked, count, holdings, holdingsChecked, events,
             if (checked == 0L) "Снимка ещё нет" else "Последняя проверка: ${dateText(checked)}",
-            prefs.getBoolean("enabled", false), prefs.getLong("intervalMinutes", 30))
+            prefs.getBoolean("enabled", false), prefs.getLong("intervalMinutes", 30),
+            latestValue, latestValueAt, firstValue, firstValueAt)
     }
 
     fun setSchedule(enabled: Boolean, minutes: Long) {
@@ -150,9 +191,12 @@ fun jsonToTrades(arr: JSONArray): List<TradeRow> = (0 until arr.length()).map { 
     TradeRow(if (o.isNull("id")) null else o.getString("id"), (0 until cells.length()).map { cells.getString(it) })
 }
 fun holdingsToJson(rows: List<Holding>): JSONArray = JSONArray().apply {
-    rows.forEach { put(JSONObject().put("ticker", it.ticker).put("name", it.name).put("percent", it.percent).put("quantity", it.quantity)) }
+    rows.forEach { put(JSONObject().put("ticker", it.ticker).put("name", it.name).put("percent", it.percent).put("quantity", it.quantity)
+            .put("marketValueRub", it.marketValueRub ?: JSONObject.NULL)) }
 }
 fun jsonToHoldings(arr: JSONArray): List<Holding> = (0 until arr.length()).map { i ->
     val o = arr.getJSONObject(i)
-    Holding(o.getString("ticker"), o.getString("name"), o.getDouble("percent"), o.optString("quantity", ""))
+    Holding(o.getString("ticker"), o.getString("name"), o.getDouble("percent"),
+        o.optString("quantity", ""),
+        if (o.isNull("marketValueRub")) null else o.optString("marketValueRub").takeIf { it.isNotBlank() })
 }

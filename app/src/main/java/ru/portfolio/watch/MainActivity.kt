@@ -113,6 +113,33 @@ private fun PortfolioScreen(
             Spacer(Modifier.height(5.dp))
             Text(if (state.lastChecked == 0L) "Ещё нет снимка" else dateText(state.lastChecked),
                 fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(12.dp))
+            if (state.portfolioValueRub != null) {
+                Text("СТОИМОСТЬ ВСЕХ АКТИВОВ", color = subtle, fontSize = 11.sp, letterSpacing = 0.5.sp)
+                Spacer(Modifier.height(3.dp))
+                Text(RubValues.display(state.portfolioValueRub), fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold, color = Color(0xFFF1F4F8))
+                Text("На момент проверки: ${dateText(state.valuationCheckedAt)}",
+                    color = subtle, fontSize = 11.sp)
+                if (state.baselineValueRub != null) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("При первом снимке: ${RubValues.display(state.baselineValueRub)}",
+                        color = subtle, fontSize = 12.sp)
+                    Text("Первая оценка: ${dateText(state.baselineValueAt)}",
+                        color = subtle, fontSize = 11.sp)
+                    val current = state.portfolioValueRub.toBigDecimalOrNull()
+                    val first = state.baselineValueRub.toBigDecimalOrNull()
+                    if (current != null && first != null) {
+                        val delta = current.subtract(first)
+                        Text("Изменение стоимости: ${if (delta.signum() >= 0) "+" else "−"}${RubValues.display(delta.abs().toPlainString())}",
+                            color = if (delta.signum() >= 0) success else alert, fontSize = 13.sp)
+                        Text("Учитывает рыночные цены и операции, не является доходностью.",
+                            color = subtle, fontSize = 10.sp)
+                    }
+                }
+            } else {
+                Text("Стоимость портфеля пока не получена", color = subtle, fontSize = 12.sp)
+            }
             Spacer(Modifier.height(10.dp))
             Text("Операций в истории: ${state.tradesCount}", color = subtle, fontSize = 13.sp)
             Spacer(Modifier.height(16.dp))
@@ -147,7 +174,11 @@ private fun PortfolioScreen(
                             if (h.name != h.ticker) Text(h.name, color = subtle, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                         Spacer(Modifier.width(8.dp))
-                        Text(String.format(Locale("ru", "RU"), "%.1f%%", h.percent), fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(RubValues.display(h.marketValueRub), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+                            Text(String.format(Locale("ru", "RU"), "%.1f%%", h.percent),
+                                color = subtle, fontWeight = FontWeight.Medium, fontSize = 12.sp)
+                        }
                     }
                 }
                 Text("Данные диаграммы: ${dateText(state.holdingsCheckedAt)}", color = subtle, fontSize = 11.sp)
