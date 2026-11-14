@@ -43,37 +43,40 @@ class Collector(private val context: Context) {
         return Capture(trades, holdings, "Сделок подтверждено: ${trades.size}. $allocationMessage")
     }
 
-    private fun tradesQuery(offset: Int, limit: Int = 100): String =
-        "$API_ROOT/trades/$PORTFOLIO_ID?offset=$offset&limit=$limit" +
-            "&showLinkedMoneyTrades=false&showMoneyTrades=true" +
-            "&calculateSubTotal=true&sortColumn=DATE&descending=true"
+    private fun tradesQuery(offset: Int, limit: Int = 25): String =
+        "$API_ROOT/trades/$PORTFOLIO_ID?offset=$offset&limit=$limit&&&" +
+            "showLinkedMoneyTrades=false&showMoneyTrades=true&search=&&start=&end=&&&&" +
+            "calculateSubTotal=true&sortColumn=DATE&descending=true"
 
     private fun readAllTrades(started: Long): List<TradeRow> {
         val records = ArrayList<TradeRow>()
         val ids = HashSet<String>()
         var expected = -1
-        var pageIndex = 0
+        var offset = 0
+        val pageSize = 25
         var firstPage: List<TradeRow> = emptyList()
         var requests = 0
         while (true) {
             if (++requests > 150 || System.currentTimeMillis() - started > 85000L) {
                 error("Превышен лимит загрузки истории: ${records.size} операций из $expected")
             }
-            val payload = request(tradesQuery(pageIndex))
+            val payload = request(tradesQuery(offset, pageSize))
             val total = payload.optInt("totalItems", -1)
             if (total <= 0 || total > 20000) error("Некорректное общее количество сделок: $total")
             if (expected < 0) expected = total
             if (expected != total) error("История изменилась при загрузке ($expected → $total). Повторите проверку")
-            if (payload.optInt("offset", -1) != pageIndex || payload.optInt("pageNumber", -1) != pageIndex)
-                error("Сервер вернул неверную страницу: ожидалась $pageIndex")
+            // IntelInvest incorrectly returns offset=0 and pageNumber=0 even for later pages.
+            // Verify actual uniqueness and completeness instead of trusting those metadata fields.
+            if (payload.optInt("pageSize", -1) != pageSize)
+                error("Сервер сменил размер страницы при загрузке")
             val content = payload.optJSONArray("content") ?: error("В ответе отсутствует список сделок")
-            if (content.length() == 0 || content.length() > 100) error("Неверное число записей на странице: ${content.length()}")
+            if (content.length() == 0 || content.length() > pageSize) error("Неверное число записей на странице: ${content.length()}")
             val page = ArrayList<TradeRow>(content.length())
             for (i in 0 until content.length()) {
-                val o = content.optJSONObject(i) ?: error("Некорректная сделка на странице $pageIndex")
+                val o = content.optJSONObject(i) ?: error("Некорректная сделка на странице ${offset / pageSize}")
                 val id = o.optLong("id", 0L)
                 if (id <= 0L || o.optLong("portfolioId", 0L) != PORTFOLIO_ID.toLong()) {
-                    error("Неверный ID сделки или портфеля на странице $pageIndex")
+                    error("Неверный ID сделки или портфеля на странице ${offset / pageSize}")
                 }
                 if (!ids.add(id.toString())) error("Дублирующаяся сделка #$id: возможен сдвиг пагинации")
                 val date = o.optString("date").trim()
@@ -94,20 +97,27 @@ class Collector(private val context: Context) {
                 ))
                 page += row
             }
-            if (pageIndex == 0) firstPage = page
+            if (offset == 0) firstPage = page
             records.addAll(page)
             if (records.size >= expected) break
-            pageIndex++
+            if (content.length() != pageSize) error("Неполная промежуточная страница на смещении $offset")
+            offset += pageSize
         }
         if (records.size != expected) error("Получено ${records.size} из $expected сделок — снимок не сохранён")
         // Guard against newly inserted/backdated trades during multi-page reads.
-        val repeat = request(tradesQuery(0)).optJSONArray("content") ?: error("Не удалось перепроверить первую страницу")
+        val repeatPayload = request(tradesQuery(0, pageSize))
+        if (repeatPayload.optInt("totalItems", -1) != expected) error("Число сделок изменилось во время загрузки")
+        val repeat = repeatPayload.optJSONArray("content") ?: error("Не удалось перепроверить первую страницу")
         if (repeat.length() != firstPage.size) error("Первая страница изменилась во время загрузки")
         for (i in firstPage.indices) {
             val current = repeat.optJSONObject(i) ?: error("Ошибочная перепроверка страницы")
             if (current.optLong("id").toString() != firstPage[i].stableId ||
                 current.optString("date") != firstPage[i].cells[0] ||
-                current.optString("operationLabel") != firstPage[i].cells[1]) {
+                current.optString("operationLabel") != firstPage[i].cells[1] ||
+                current.optString("quantity") != firstPage[i].cells[4] ||
+                current.optString("moneyPrice") != firstPage[i].cells[5] ||
+                current.optString("signedTotal") != firstPage[i].cells[7] ||
+                (if (current.isNull("note")) "" else current.optString("note").trim()) != firstPage[i].cells[10]) {
                 error("Сделки изменились во время загрузки — повторите проверку")
             }
         }

@@ -11,12 +11,12 @@ async function fetchJson(url) {
   } finally { clearTimeout(timer); }
 }
 (async()=>{
- const ids = new Set(), perPage = 100; let pageIndex = 0, total = null;
+ const ids = new Set(), perPage = 25; let offset = 0, total = null;
  while(true) {
-  const params = new URLSearchParams({offset: String(pageIndex),limit: String(perPage),showLinkedMoneyTrades:'false',showMoneyTrades:'true',calculateSubTotal:'true',sortColumn:'DATE',descending:'true'});
-  const page = await fetchJson(`${ROOT}/trades/${ID}?${params}`);
-  assert.equal(page.offset, pageIndex);
-  assert.equal(page.pageNumber, pageIndex);
+  const query = `offset=${offset}&limit=${perPage}&&&showLinkedMoneyTrades=false&showMoneyTrades=true&search=&&start=&end=&&&&calculateSubTotal=true&sortColumn=DATE&descending=true`;
+  const page = await fetchJson(`${ROOT}/trades/${ID}?${query}`);
+  // Server metadata pageNumber/offset stay zero on later pages (observed in real UI).
+  assert.equal(page.pageSize, perPage);
   assert.ok(Number.isInteger(page.totalItems) && page.totalItems > 0);
   if(total === null) total = page.totalItems;
   assert.equal(page.totalItems, total);
@@ -29,7 +29,8 @@ async function fetchJson(url) {
   }
   assert.ok(ids.size <= total && ids.size < 20000);
   if(ids.size === total) break;
-  pageIndex++;
+  assert.equal(page.content.length, perPage, `Short intermediate page at ${offset}`);
+  offset += perPage;
  }
  const overview = await fetchJson(`${ROOT}/portfolios/${ID}/overview`);
  assert.ok(Array.isArray(overview.rows));
