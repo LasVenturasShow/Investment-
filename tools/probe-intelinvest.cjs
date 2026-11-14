@@ -10,6 +10,20 @@ const {chromium}=require('playwright'),fs=require('fs');
   const s=JSON.stringify(o);if(s.length>30000){o.preview=s.slice(0,6000);for(const k of o.keys){if(typeof o[k]==='object')delete o[k]}}
   }catch(e){o.error=String(e)} r.responses.push(o)});
   try{r.navigation=(await p.goto(target,{waitUntil:'domcontentloaded',timeout:35000}))?.status();await p.waitForTimeout(9000);r.final=p.url();r.dom=await p.evaluate(()=>({body:document.body.innerText.slice(0,1800),tables:Array.from(document.querySelectorAll('table')).map(x=>({headers:Array.from(x.querySelectorAll('th')).map(v=>v.innerText),rows:x.querySelectorAll('tbody tr').length})).slice(0,8)}));}catch(e){r.error=String(e)}
+  if(target.endsWith('/trades')){
+    r.footer=await p.evaluate(()=>document.querySelector('.v-data-table-footer')?.outerHTML.slice(0,9000)||'NOT_FOUND');
+    const selector='.v-data-table-footer__next-page';
+    try {
+      const button=p.locator(selector).first();
+      if(await button.count()){
+        r.beforeNext=r.requests.filter(x=>x.url.includes('/api/public/trades/')).slice(-1);
+        await button.click({timeout:5000});
+        await p.waitForTimeout(3500);
+        r.afterNext=r.requests.filter(x=>x.url.includes('/api/public/trades/')).slice(-3);
+        r.afterNextText=await p.evaluate(()=>document.body.innerText.slice(-550));
+      }else r.nextError='NEXT_BUTTON_NOT_FOUND';
+    }catch(e){r.nextError=String(e)}
+  }
   results.push(r);await ctx.close();
  }
  await b.close();fs.mkdirSync('diagnostics',{recursive:true});fs.writeFileSync('diagnostics/intelinvest-public-probe.json',JSON.stringify({results},null,2));console.log(results.map(r=>({target:r.target,status:r.navigation,urls:r.requests.map(x=>x.url)})));
