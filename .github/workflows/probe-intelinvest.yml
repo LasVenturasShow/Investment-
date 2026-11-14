@@ -1,0 +1,42 @@
+name: Diagnose IntelInvest public page
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/probe-intelinvest.cjs'
+      - '.github/workflows/probe-intelinvest.yml'
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Probe public pages
+        run: node tools/probe-intelinvest.cjs
+      - name: Upload sanitized diagnostics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-intelinvest-page-diagnostics
+          path: diagnostics/intelinvest-public-probe.json
+          if-no-files-found: ignore
+      - name: Save public probe result into repository
+        if: success()
+        run: |
+          git config user.name "Portfolio Watch CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add diagnostics/intelinvest-public-probe.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record public IntelInvest diagnostic evidence [skip ci]"
+            git push origin HEAD:main
+          fi
