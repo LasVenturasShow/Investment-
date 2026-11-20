@@ -1,0 +1,23 @@
+name: Reconcile public holdings
+on:
+  push:
+    branches: [main]
+    paths: ['tools/reconcile-holdings.cjs', '.github/workflows/reconcile-holdings.yml']
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/reconcile-holdings.cjs
+      - run: |
+          git config user.name "Portfolio Watch CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add diagnostics/holdings-reconciliation.json
+          git commit -m "Record public holding reconciliation [skip ci]"
+          git push origin HEAD:main
