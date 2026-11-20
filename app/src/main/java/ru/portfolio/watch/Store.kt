@@ -10,9 +10,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private class PortfolioDb(context: Context) : SQLiteOpenHelper(context, "portfolio_watch.db", null, 2) {
+private class PortfolioDb(context: Context) : SQLiteOpenHelper(context, "portfolio_watch.db", null, 3) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE snapshots(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, trades TEXT NOT NULL)")
+        db.execSQL("CREATE TABLE snapshots(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, trades TEXT NOT NULL, holdings_note TEXT NOT NULL DEFAULT '')")
         db.execSQL("CREATE TABLE positions(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, holdings TEXT NOT NULL)")
         db.execSQL("CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp_ms INTEGER NOT NULL, type TEXT NOT NULL, label TEXT NOT NULL, description TEXT NOT NULL)")
         createValuations(db)
@@ -22,6 +22,7 @@ private class PortfolioDb(context: Context) : SQLiteOpenHelper(context, "portfol
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) createValuations(db)
+        if (oldVersion < 3) db.execSQL("ALTER TABLE snapshots ADD COLUMN holdings_note TEXT NOT NULL DEFAULT ''")
     }
 }
 
@@ -39,7 +40,9 @@ data class MonitorState(
     val portfolioValueRub: String? = null,
     val valuationCheckedAt: Long = 0,
     val baselineValueRub: String? = null,
-    val baselineValueAt: Long = 0
+    val baselineValueAt: Long = 0,
+    val holdingsNote: String = "",
+    val holdingsVerified: Boolean = false
 )
 
 data class CheckOutcome(val initial: Boolean, val changes: List<PortfolioChange>, val checkedAt: Long, val diagnostic: String)
@@ -59,10 +62,10 @@ class PortfolioStore(context: Context) {
             val prior = readPrior(database)
             val changes = (if (prior == null) emptyList() else DiffCore.compare(prior, capture.trades)).toMutableList()
             val previousHoldings = readPriorHoldings(database)
-            if (previousHoldings != null && capture.holdings.isNotEmpty()) {
+            if (previousHoldings != null && capture.holdingsVerified) {
                 // Market price/percentage changes are NOT trades; quantity changes are reported separately.
-                val previous = previousHoldings.associateBy { it.ticker.trim().uppercase() }
-                val current = capture.holdings.associateBy { it.ticker.trim().uppercase() }
+                val previous = previousHoldings.filter { it.ticker != "RUB" }.associateBy { it.ticker.trim().uppercase() }
+                val current = capture.holdings.filter { it.ticker != "RUB" }.associateBy { it.ticker.trim().uppercase() }
                 for ((key, asset) in current) if (key !in previous) changes +=
                     PortfolioChange("POSITION_ADDED", "Новый актив в составе", "${asset.ticker} · ${asset.name}")
                 for ((key, asset) in previous) if (key !in current) changes +=
@@ -80,13 +83,14 @@ class PortfolioStore(context: Context) {
             database.insertOrThrow("snapshots", null, ContentValues().apply {
                 put("timestamp_ms", timestamp)
                 put("trades", tradesToJson(capture.trades).toString())
+                put("holdings_note", capture.holdingsNote)
             })
-            if (capture.holdings.isNotEmpty()) database.insertOrThrow("positions", null, ContentValues().apply {
+            if (capture.holdingsVerified) database.insertOrThrow("positions", null, ContentValues().apply {
                 put("timestamp_ms", timestamp)
                 put("holdings", holdingsToJson(capture.holdings).toString())
             })
             if (capture.portfolioValueRub != null) {
-                require(capture.portfolioValueRub.toBigDecimalOrNull()?.signum() == 1) {
+                require(capture.portfolioValueRub.toBigDecimalOrNull()?.signum()?.let { it >= 0 } == true) {
                     "Неверная стоимость портфеля в снимке"
                 }
                 database.insertOrThrow("valuations", null, ContentValues().apply {
@@ -117,10 +121,12 @@ class PortfolioStore(context: Context) {
         val database = db.readableDatabase
         var checked = 0L
         var count = 0
-        database.rawQuery("SELECT timestamp_ms,trades FROM snapshots ORDER BY id DESC LIMIT 1", null).use { c ->
+        var holdingsNote = ""
+        database.rawQuery("SELECT timestamp_ms,trades,holdings_note FROM snapshots ORDER BY id DESC LIMIT 1", null).use { c ->
             if (c.moveToFirst()) {
                 checked = c.getLong(0)
                 count = jsonToTrades(JSONArray(c.getString(1))).size
+                holdingsNote = c.getString(2).orEmpty()
             }
         }
         var holdingsChecked = 0L
@@ -151,10 +157,12 @@ class PortfolioStore(context: Context) {
         database.rawQuery("SELECT timestamp_ms,type,label,description FROM events ORDER BY id DESC LIMIT 40", null).use { c ->
             while (c.moveToNext()) events.add(HistoryEntry(c.getLong(0), PortfolioChange(c.getString(1), c.getString(2), c.getString(3))))
         }
-        return MonitorState(checked, count, holdings, holdingsChecked, events,
+        val holdingsVerified = checked > 0L && holdingsChecked == checked
+        return MonitorState(checked, count, if (holdingsVerified) holdings else emptyList(), holdingsChecked, events,
             if (checked == 0L) "Снимка ещё нет" else "Последняя проверка: ${dateText(checked)}",
             prefs.getBoolean("enabled", false), prefs.getLong("intervalMinutes", 30),
-            latestValue, latestValueAt, firstValue, firstValueAt)
+            latestValue.takeIf { latestValueAt == checked && holdingsVerified }, latestValueAt,
+            firstValue, firstValueAt, holdingsNote, holdingsVerified)
     }
 
     fun setSchedule(enabled: Boolean, minutes: Long) {

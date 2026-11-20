@@ -7,11 +7,11 @@ android {
     namespace = "ru.portfolio.watch"
     compileSdk = 35
     defaultConfig {
-        applicationId = "ru.portfolio.watch.rub.priority"
+        applicationId = "ru.portfolio.watch.rub.reconciled"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.5.0-priority"
+        versionCode = 7
+        versionName = "0.5.1-holdings"
     }
     buildFeatures { compose = true }
     compileOptions {

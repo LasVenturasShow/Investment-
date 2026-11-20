@@ -69,3 +69,8 @@
 - Через интерфейс можно открыть системный запрос на точные будильники и исключение из оптимизации батареи. Разрешения остаются под контролем пользователя.
 - **Ограничение:** Android Doze, ограничение фонового доступа, сетевые сбои, принудительная остановка и квоты приоритетных задач могут задерживать выполнение даже при полном заряде. Нельзя гарантировать строго каждые 15 минут; внешнего сервера по-прежнему нет.
 - Тестовая версия устанавливается отдельно с новым идентификатором `ru.portfolio.watch.rub.priority`, сохраняя другие установленные версии и их локальные базы. История между версиями не переносится автоматически; отключите расписание в старых версиях, чтобы не было двойных проверок.
+
+
+## v0.5.1 — Reconciled holdings
+
+The public trades history is compared by share ID and exact decimal quantities against the overview's last included trade timestamp. Fully closed positions are excluded even when the overview is stale. Partial sales and subsequent purchases update the quantity. Cash is adjusted from explicitly linked RUB settlements only. Price and P&L are kept separate from quantity verification; unknown valuation or cost basis is not invented. If reconciliation fails, the previous list is retained in storage but hidden as a current portfolio. The previous app installation is preserved by a separate test application ID; its local history does not migrate automatically. All existing background scheduling, settings, and the launcher icon remain.

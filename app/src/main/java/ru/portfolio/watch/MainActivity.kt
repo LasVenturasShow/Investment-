@@ -176,7 +176,9 @@ private fun PortfolioScreen(
                     }
                 }
             } else {
-                Text("Стоимость портфеля пока не получена", color = subtle, fontSize = 12.sp)
+                Text("Актуальная стоимость не подтверждена", color = alert, fontSize = 12.sp)
+                if (state.valuationCheckedAt > 0L) Text("Последняя подтверждённая оценка: " + dateText(state.valuationCheckedAt),
+                    color = subtle, fontSize = 11.sp)
             }
             Spacer(Modifier.height(10.dp))
             Text("Операций в истории: ${state.tradesCount}", color = subtle, fontSize = 13.sp)
@@ -194,14 +196,22 @@ private fun PortfolioScreen(
             Text("Структура активов", fontSize = 19.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(5.dp))
             Text("Стоимость, доля и результат открытых позиций", color = subtle, fontSize = 12.sp)
+            if (state.holdingsNote.isNotBlank()) {
+                Spacer(Modifier.height(8.dp))
+                Text(state.holdingsNote, color = if (state.portfolioValueRub == null || state.holdingsNote.contains("запаздывает")) alert else success,
+                    fontSize = 12.sp, lineHeight = 17.sp)
+            }
             if (state.holdings.isEmpty()) {
                 Spacer(Modifier.height(24.dp))
                 Box(Modifier.fillMaxWidth().height(90.dp), contentAlignment = Alignment.Center) {
-                    Text("Данные по долям активов пока не получены", color = subtle, textAlign = TextAlign.Center)
+                    Text(if (state.holdingsVerified) "Открытых позиций нет" else "Актуальный состав не подтверждён. Старый список скрыт.",
+                        color = subtle, textAlign = TextAlign.Center)
                 }
             } else {
                 Spacer(Modifier.height(18.dp))
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { AllocationRing(state.holdings) }
+                if (state.portfolioValueRub != null && state.holdings.sumOf { it.percent } > 0.0)
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { AllocationRing(state.holdings) }
+                else Text("Диаграмма временно недоступна: не все оценки подтверждены.", color = subtle, fontSize = 12.sp)
                 Spacer(Modifier.height(18.dp))
                 state.holdings.sortedByDescending { it.percent }.forEachIndexed { index, h ->
                     Row(Modifier.fillMaxWidth().padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -212,6 +222,7 @@ private fun PortfolioScreen(
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                             if (h.name != h.ticker) Text(h.name, color = subtle, fontSize = 11.sp,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text("Количество: ${h.quantity}", color = subtle, fontSize = 12.sp)
                             Text("Стоимость: ${RubValues.display(h.marketValueRub)}",
                                 color = subtle, fontSize = 12.sp)
                         }
@@ -228,7 +239,7 @@ private fun PortfolioScreen(
                                 color = changeColor, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             Text(RubValues.displaySignedPercent(h.openProfitPercent),
                                 color = changeColor, fontWeight = FontWeight.Medium, fontSize = 13.sp)
-                            Text(String.format(Locale("ru", "RU"), "Доля %.1f%%", h.percent),
+                            Text(if (state.portfolioValueRub != null) String.format(Locale("ru", "RU"), "Доля %.1f%%", h.percent) else "Доля —",
                                 color = subtle, fontSize = 11.sp)
                         }
                     }
