@@ -1,0 +1,1657 @@
+{
+  "captured": "2026-11-20T14:10:52.370Z",
+  "calculatedAt": "2026-11-20 17:10:51 +0300",
+  "lastTradeDate": "2026-11-13 18:27:00",
+  "tradeCount": 805,
+  "overviewTradeCount": 1459,
+  "operations": {
+    "SELL": 382,
+    "BUY": 376,
+    "DIVIDEND": 4,
+    "VARIATION_MARGIN_INCOME": 33,
+    "VARIATION_MARGIN_LOSS": 10
+  },
+  "latest": [
+    {
+      "id": 520343777,
+      "date": "2026-11-20 16:33:14",
+      "insert": "2026-11-20 08:33:13",
+      "ticker": "RAGR",
+      "shareId": 244447,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "3000",
+      "total": "RUB -207000"
+    },
+    {
+      "id": 520343761,
+      "date": "2026-11-20 16:31:43",
+      "insert": "2026-11-20 08:31:43",
+      "ticker": "CHMF",
+      "shareId": 1334,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "400",
+      "total": "RUB -270000"
+    },
+    {
+      "id": 520343759,
+      "date": "2026-11-20 16:30:57",
+      "insert": "2026-11-20 08:30:57",
+      "ticker": "NLMK",
+      "shareId": 1318,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "3900",
+      "total": "RUB -287820"
+    },
+    {
+      "id": 519435568,
+      "date": "2026-11-13 18:27:00",
+      "insert": "2026-11-13 10:27:48",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "138000",
+      "total": "RUB -294464.4"
+    },
+    {
+      "id": 519435557,
+      "date": "2026-11-13 18:26:00",
+      "insert": "2026-11-13 10:27:01",
+      "ticker": "MTSS",
+      "shareId": 1168,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "1600",
+      "total": "RUB 294880"
+    },
+    {
+      "id": 519317853,
+      "date": "2026-11-12 18:44:00",
+      "insert": "2026-11-12 10:44:28",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "104000",
+      "total": "RUB 221665.6"
+    },
+    {
+      "id": 519307719,
+      "date": "2026-11-12 16:44:00",
+      "insert": "2026-11-12 08:44:29",
+      "ticker": "UGLD",
+      "shareId": 143490,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "700000",
+      "total": "RUB -519750"
+    },
+    {
+      "id": 519239645,
+      "date": "2026-11-12 10:50:00",
+      "insert": "2026-11-12 02:50:35",
+      "ticker": "NLMK",
+      "shareId": 1318,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "3900",
+      "total": "RUB 298194"
+    },
+    {
+      "id": 519084227,
+      "date": "2026-11-11 17:25:00",
+      "insert": "2026-11-11 09:26:15",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "196555",
+      "total": "RUB -418780.083"
+    },
+    {
+      "id": 519079962,
+      "date": "2026-11-11 16:46:00",
+      "insert": "2026-11-11 08:46:25",
+      "ticker": "T",
+      "shareId": 234101,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "500",
+      "total": "RUB 138500"
+    },
+    {
+      "id": 519076477,
+      "date": "2026-11-11 16:23:00",
+      "insert": "2026-11-11 08:23:35",
+      "ticker": "CHMF",
+      "shareId": 1334,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "400",
+      "total": "RUB 280080"
+    },
+    {
+      "id": 518966291,
+      "date": "2026-11-10 18:30:00",
+      "insert": "2026-11-10 10:30:45",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "267500",
+      "total": "RUB 569775"
+    },
+    {
+      "id": 518957740,
+      "date": "2026-11-10 17:01:00",
+      "insert": "2026-11-10 09:01:04",
+      "ticker": "HEAD",
+      "shareId": 212310,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "123",
+      "total": "RUB -343416"
+    },
+    {
+      "id": 518957738,
+      "date": "2026-11-10 17:00:00",
+      "insert": "2026-11-10 09:00:57",
+      "ticker": "LKOH",
+      "shareId": 1133,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "10",
+      "total": "RUB -59455"
+    },
+    {
+      "id": 518803581,
+      "date": "2026-11-09 22:43:00",
+      "insert": "2026-11-09 14:43:00",
+      "ticker": "FLOT",
+      "shareId": 6938,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "2000",
+      "total": "RUB -169780"
+    },
+    {
+      "id": 518731685,
+      "date": "2026-11-09 16:49:00",
+      "insert": "2026-11-09 08:49:47",
+      "ticker": "HEAD",
+      "shareId": 212310,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "38",
+      "total": "RUB 105374"
+    },
+    {
+      "id": 518425520,
+      "date": "2026-11-06 14:22:00",
+      "insert": "2026-11-06 06:23:08",
+      "ticker": "HEAD",
+      "shareId": 212310,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "85",
+      "total": "RUB 232305"
+    },
+    {
+      "id": 518274677,
+      "date": "2026-11-05 16:58:00",
+      "insert": "2026-11-05 08:59:15",
+      "ticker": "RAGR",
+      "shareId": 244447,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "3000",
+      "total": "RUB 211620"
+    },
+    {
+      "id": 518191001,
+      "date": "2026-11-05 09:30:00",
+      "insert": "2026-11-05 01:30:13",
+      "ticker": "NVTK",
+      "shareId": 1173,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "260",
+      "total": "RUB -289120"
+    },
+    {
+      "id": 518190995,
+      "date": "2026-11-05 09:29:00",
+      "insert": "2026-11-05 01:29:51",
+      "ticker": "ROSN",
+      "shareId": 1175,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "720",
+      "total": "RUB -257688"
+    },
+    {
+      "id": 518064466,
+      "date": "2026-11-03 18:19:00",
+      "insert": "2026-11-03 10:19:48",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "700",
+      "total": "RUB -1487.64"
+    },
+    {
+      "id": 518064460,
+      "date": "2026-11-03 18:19:00",
+      "insert": "2026-11-03 10:19:31",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "45000",
+      "total": "RUB -95634"
+    },
+    {
+      "id": 518046064,
+      "date": "2026-11-03 17:11:00",
+      "insert": "2026-11-03 09:12:07",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "289000",
+      "total": "RUB 614182.8"
+    },
+    {
+      "id": 518046059,
+      "date": "2026-11-03 17:11:00",
+      "insert": "2026-11-03 09:11:37",
+      "ticker": "PLZL",
+      "shareId": 1287,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "320",
+      "total": "RUB -331200"
+    },
+    {
+      "id": 518043126,
+      "date": "2026-11-03 16:34:00",
+      "insert": "2026-11-03 08:34:33",
+      "ticker": "PLZL",
+      "shareId": 1287,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "320",
+      "total": "RUB 330304"
+    },
+    {
+      "id": 518064441,
+      "date": "2026-11-03 16:32:00",
+      "insert": "2026-11-03 10:17:39",
+      "ticker": "NVTK",
+      "shareId": 1173,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "60",
+      "total": "RUB -67926"
+    },
+    {
+      "id": 518042960,
+      "date": "2026-11-03 16:31:00",
+      "insert": "2026-11-03 08:31:31",
+      "ticker": "FLOT",
+      "shareId": 6938,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "2000",
+      "total": "RUB -169040"
+    },
+    {
+      "id": 518042602,
+      "date": "2026-11-03 16:14:00",
+      "insert": "2026-11-03 08:15:17",
+      "ticker": "LKOH",
+      "shareId": 1133,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "5",
+      "total": "RUB -30042.5"
+    },
+    {
+      "id": 518014667,
+      "date": "2026-11-03 12:54:00",
+      "insert": "2026-11-03 04:54:15",
+      "ticker": "RAGR",
+      "shareId": 244447,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "3500",
+      "total": "RUB -248220"
+    },
+    {
+      "id": 517896553,
+      "date": "2026-11-02 17:23:00",
+      "insert": "2026-11-02 09:24:14",
+      "ticker": "LQDT",
+      "shareId": 94160,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "431000",
+      "total": "RUB 915314.7"
+    },
+    {
+      "id": 517855424,
+      "date": "2026-11-02 16:39:00",
+      "insert": "2026-11-02 08:39:45",
+      "ticker": "FLOT",
+      "shareId": 6938,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "1000",
+      "total": "RUB -87640"
+    },
+    {
+      "id": 517855422,
+      "date": "2026-11-02 16:39:00",
+      "insert": "2026-11-02 08:39:36",
+      "ticker": "LKOH",
+      "shareId": 1133,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "10",
+      "total": "RUB -61325"
+    },
+    {
+      "id": 517855420,
+      "date": "2026-11-02 16:39:00",
+      "insert": "2026-11-02 08:39:26",
+      "ticker": "ROSN",
+      "shareId": 1175,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "200",
+      "total": "RUB -75200"
+    },
+    {
+      "id": 517855418,
+      "date": "2026-11-02 16:39:00",
+      "insert": "2026-11-02 08:39:19",
+      "ticker": "NVTK",
+      "shareId": 1173,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "50",
+      "total": "RUB -57330"
+    },
+    {
+      "id": 517833951,
+      "date": "2026-11-02 14:12:00",
+      "insert": "2026-11-02 06:12:05",
+      "ticker": "T",
+      "shareId": 234101,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "500",
+      "total": "RUB -136850"
+    },
+    {
+      "id": 517823994,
+      "date": "2026-11-02 11:24:00",
+      "insert": "2026-11-02 05:11:20",
+      "ticker": "ROSN",
+      "shareId": 1175,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "300",
+      "total": "RUB -115290"
+    },
+    {
+      "id": 517799666,
+      "date": "2026-11-02 10:51:00",
+      "insert": "2026-11-02 02:51:09",
+      "ticker": "TRNFP",
+      "shareId": 1328,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "300",
+      "total": "RUB -322200"
+    },
+    {
+      "id": 517791358,
+      "date": "2026-11-02 10:16:00",
+      "insert": "2026-11-02 02:16:43",
+      "ticker": "LKOH",
+      "shareId": 1133,
+      "operation": "SELL",
+      "asset": "STOCK",
+      "qty": "35",
+      "total": "RUB -218907.5"
+    },
+    {
+      "id": 517787566,
+      "date": "2026-11-02 09:32:00",
+      "insert": "2026-11-02 01:33:06",
+      "ticker": "RAGR",
+      "shareId": 244447,
+      "operation": "BUY",
+      "asset": "STOCK",
+      "qty": "3500",
+      "total": "RUB 261170"
+    },
+    {
+      "id": 517084814,
+      "date": "2026-10-28 18:27:00",
+      "insert": "2026-10-28 11:27:13",
+      "ticker": "NVTK",
+      "shareId": 1173,
+      "operation": "DIVIDEND",
+      "asset": "STOCK",
+      "qty": "350",
+      "total": "RUB 12425"
+    }
+  ],
+  "rows": [
+    {
+      "id": 143490,
+      "ticker": "UGLD",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-12T16:44:00.000+03:00",
+      "ledger": {
+        "ticker": "UGLD",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 11,
+          "BUY": 16
+        }
+      }
+    },
+    {
+      "id": 1155,
+      "ticker": "MOEX",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-02-05T10:04:00.000+03:00",
+      "ledger": {
+        "ticker": "MOEX",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 4,
+          "BUY": 5
+        }
+      }
+    },
+    {
+      "id": 1156,
+      "ticker": "MSNG",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-07-06T16:54:00.000+03:00",
+      "ledger": {
+        "ticker": "MSNG",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 5,
+          "BUY": 4
+        }
+      }
+    },
+    {
+      "id": 1287,
+      "ticker": "PLZL",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-03T17:11:00.000+03:00",
+      "ledger": {
+        "ticker": "PLZL",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 15,
+          "BUY": 16
+        }
+      }
+    },
+    {
+      "id": 166026,
+      "ticker": "SiZ5",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2025-12-18T11:33:00.000+03:00",
+      "ledger": {
+        "ticker": "SiZ5",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "VARIATION_MARGIN_INCOME": 7,
+          "VARIATION_MARGIN_LOSS": 2,
+          "BUY": 2
+        }
+      }
+    },
+    {
+      "id": 1294,
+      "ticker": "PIKK",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-06-15T17:41:00.000+03:00",
+      "ledger": {
+        "ticker": "PIKK",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "BUY": 7,
+          "SELL": 4
+        }
+      }
+    },
+    {
+      "id": 191757,
+      "ticker": "YDEX",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-09-01T21:19:00.000+03:00",
+      "ledger": {
+        "ticker": "YDEX",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 5,
+          "BUY": 6
+        }
+      }
+    },
+    {
+      "id": 1168,
+      "ticker": "MTSS",
+      "asset": "STOCK",
+      "qty": "1600",
+      "openQty": "1600",
+      "weight": "7.35",
+      "cost": "RUB 282080",
+      "short": false,
+      "lastBuy": "2026-11-13T18:26:00.000+03:00",
+      "ledger": {
+        "ticker": "MTSS",
+        "asset": "STOCK",
+        "qty": 1600,
+        "ops": {
+          "BUY": 4,
+          "SELL": 2
+        }
+      }
+    },
+    {
+      "id": 1426,
+      "ticker": "RUAL",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-09-25T14:38:00.000+03:00",
+      "ledger": {
+        "ticker": "RUAL",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 20,
+          "BUY": 19
+        }
+      }
+    },
+    {
+      "id": 1172,
+      "ticker": "GMKN",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-07-15T10:22:00.000+03:00",
+      "ledger": {
+        "ticker": "GMKN",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 20,
+          "BUY": 19
+        }
+      }
+    },
+    {
+      "id": 1429,
+      "ticker": "CBOM",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2025-12-09T22:21:00.000+03:00",
+      "ledger": {
+        "ticker": "CBOM",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "BUY": 1,
+          "SELL": 1
+        }
+      }
+    },
+    {
+      "id": 94160,
+      "ticker": "LQDT",
+      "asset": "STOCK",
+      "qty": "812874",
+      "openQty": "812874",
+      "weight": "45.35",
+      "cost": "RUB 1739143.923",
+      "short": false,
+      "lastBuy": "2026-11-13T18:27:00.000+03:00",
+      "ledger": {
+        "ticker": "LQDT",
+        "asset": "STOCK",
+        "qty": 812874,
+        "ops": {
+          "SELL": 97,
+          "BUY": 54
+        }
+      }
+    },
+    {
+      "id": 1173,
+      "ticker": "NVTK",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-05T09:30:00.000+03:00",
+      "ledger": {
+        "ticker": "NVTK",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 24,
+          "DIVIDEND": 2,
+          "BUY": 20
+        }
+      }
+    },
+    {
+      "id": 1175,
+      "ticker": "ROSN",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-05T09:29:00.000+03:00",
+      "ledger": {
+        "ticker": "ROSN",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 24,
+          "BUY": 24
+        }
+      }
+    },
+    {
+      "id": 6938,
+      "ticker": "FLOT",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-09T22:43:00.000+03:00",
+      "ledger": {
+        "ticker": "FLOT",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 8,
+          "BUY": 7
+        }
+      }
+    },
+    {
+      "id": 76317,
+      "ticker": "LENT",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-06-05T18:21:00.000+03:00",
+      "ledger": {
+        "ticker": "LENT",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 180894,
+      "ticker": "MBNK",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-05-18T09:47:00.000+03:00",
+      "ledger": {
+        "ticker": "MBNK",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 2
+        }
+      }
+    },
+    {
+      "id": 272294,
+      "ticker": "BRG6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-02-02T10:38:00.000+03:00",
+      "ledger": {
+        "ticker": "BRG6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "VARIATION_MARGIN_LOSS": 2,
+          "VARIATION_MARGIN_INCOME": 7,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 272295,
+      "ticker": "BRH6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-02-12T16:40:00.000+03:00",
+      "ledger": {
+        "ticker": "BRH6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 4,
+          "VARIATION_MARGIN_INCOME": 2,
+          "BUY": 5
+        }
+      }
+    },
+    {
+      "id": 1318,
+      "ticker": "NLMK",
+      "asset": "STOCK",
+      "qty": "3900",
+      "openQty": "3900",
+      "weight": "7.12",
+      "cost": "RUB 273000",
+      "short": false,
+      "lastBuy": "2026-11-12T10:50:00.000+03:00",
+      "ledger": {
+        "ticker": "NLMK",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 6,
+          "BUY": 5
+        }
+      }
+    },
+    {
+      "id": 1068,
+      "ticker": "FEES",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-02-24T09:43:00.000+03:00",
+      "ledger": {
+        "ticker": "FEES",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 1328,
+      "ticker": "TRNFP",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-02T10:51:00.000+03:00",
+      "ledger": {
+        "ticker": "TRNFP",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 4,
+          "BUY": 5
+        }
+      }
+    },
+    {
+      "id": 264628,
+      "ticker": "CNRU",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2025-10-29T10:57:00.000+03:00",
+      "ledger": {
+        "ticker": "CNRU",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 2,
+          "BUY": 10
+        }
+      }
+    },
+    {
+      "id": 1330,
+      "ticker": "TATN",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-10-27T18:04:00.000+03:00",
+      "ledger": {
+        "ticker": "TATN",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 6,
+          "BUY": 4
+        }
+      }
+    },
+    {
+      "id": 11314,
+      "ticker": "ENPG",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-01-14T23:10:00.000+03:00",
+      "ledger": {
+        "ticker": "ENPG",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 3,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 1075,
+      "ticker": "GAZP",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-07-23T10:17:00.000+03:00",
+      "ledger": {
+        "ticker": "GAZP",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "BUY": 9,
+          "SELL": 9
+        }
+      }
+    },
+    {
+      "id": 235190,
+      "ticker": "SiU6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-06-02T15:26:00.000+03:00",
+      "ledger": {
+        "ticker": "SiU6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "VARIATION_MARGIN_INCOME": 1,
+          "BUY": 2
+        }
+      }
+    },
+    {
+      "id": 1334,
+      "ticker": "CHMF",
+      "asset": "STOCK",
+      "qty": "400",
+      "openQty": "400",
+      "weight": "6.62",
+      "cost": "RUB 253920",
+      "short": false,
+      "lastBuy": "2026-11-11T16:23:00.000+03:00",
+      "ledger": {
+        "ticker": "CHMF",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 6,
+          "BUY": 6
+        }
+      }
+    },
+    {
+      "id": 190777,
+      "ticker": "VSEH",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-10-16T18:37:00.000+03:00",
+      "ledger": {
+        "ticker": "VSEH",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 1340,
+      "ticker": "SNGSP",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-08-31T12:14:00.000+03:00",
+      "ledger": {
+        "ticker": "SNGSP",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 4,
+          "BUY": 2
+        }
+      }
+    },
+    {
+      "id": 1086,
+      "ticker": "IRAO",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-03-27T16:19:00.000+03:00",
+      "ledger": {
+        "ticker": "IRAO",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 3,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 135357,
+      "ticker": "ASTR",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-06-05T18:21:00.000+03:00",
+      "ledger": {
+        "ticker": "ASTR",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 1344,
+      "ticker": "SBER",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-08-07T13:08:00.000+03:00",
+      "ledger": {
+        "ticker": "SBER",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 6,
+          "BUY": 5
+        }
+      }
+    },
+    {
+      "id": 320583,
+      "ticker": "PIU6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-06-18T17:19:00.000+03:00",
+      "ledger": {
+        "ticker": "PIU6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "BUY": 1,
+          "VARIATION_MARGIN_INCOME": 1,
+          "SELL": 1
+        }
+      }
+    },
+    {
+      "id": 319553,
+      "ticker": "GNU6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-09-01T11:15:00.000+03:00",
+      "ledger": {
+        "ticker": "GNU6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 319554,
+      "ticker": "GNZ6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-10-21T21:50:00.000+03:00",
+      "ledger": {
+        "ticker": "GNZ6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 3,
+          "BUY": 3,
+          "VARIATION_MARGIN_INCOME": 6
+        }
+      }
+    },
+    {
+      "id": 1222,
+      "ticker": "SELG",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2025-08-29T12:00:00.000+03:00",
+      "ledger": {
+        "ticker": "SELG",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 241604,
+      "ticker": "X5",
+      "asset": "STOCK",
+      "qty": "110",
+      "openQty": "110",
+      "weight": "6.47",
+      "cost": "RUB 248215",
+      "short": false,
+      "lastBuy": "2026-09-30T15:26:00.000+03:00",
+      "ledger": {
+        "ticker": "X5",
+        "asset": "STOCK",
+        "qty": 110,
+        "ops": {
+          "BUY": 12,
+          "SELL": 5,
+          "DIVIDEND": 1
+        }
+      }
+    },
+    {
+      "id": 212310,
+      "ticker": "HEAD",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-11-10T17:01:00.000+03:00",
+      "ledger": {
+        "ticker": "HEAD",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 2,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 285906,
+      "ticker": "MXZ6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-10-14T18:47:00.000+03:00",
+      "ledger": {
+        "ticker": "MXZ6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "BUY": 7,
+          "SELL": 8,
+          "VARIATION_MARGIN_INCOME": 1,
+          "VARIATION_MARGIN_LOSS": 1
+        }
+      }
+    },
+    {
+      "id": 12634,
+      "ticker": "SMLT",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-02-04T19:10:00.000+03:00",
+      "ledger": {
+        "ticker": "SMLT",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 2,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 244447,
+      "ticker": "RAGR",
+      "asset": "STOCK",
+      "qty": "3000",
+      "openQty": "3000",
+      "weight": "5.24",
+      "cost": "RUB 200820",
+      "short": false,
+      "lastBuy": "2026-11-05T16:58:00.000+03:00",
+      "ledger": {
+        "ticker": "RAGR",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 3,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 272357,
+      "ticker": "MXH6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-03-16T16:52:00.000+03:00",
+      "ledger": {
+        "ticker": "MXH6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "VARIATION_MARGIN_INCOME": 2,
+          "BUY": 1,
+          "SELL": 1
+        }
+      }
+    },
+    {
+      "id": 1252,
+      "ticker": "BELU",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-03-24T16:06:00.000+03:00",
+      "ledger": {
+        "ticker": "BELU",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 141796,
+      "ticker": "MMH6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-01-26T11:38:00.000+03:00",
+      "ledger": {
+        "ticker": "MMH6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "VARIATION_MARGIN_LOSS": 2,
+          "SELL": 3,
+          "BUY": 3,
+          "VARIATION_MARGIN_INCOME": 2
+        }
+      }
+    },
+    {
+      "id": 1133,
+      "ticker": "LKOH",
+      "asset": "STOCK",
+      "qty": "30",
+      "openQty": "30",
+      "weight": "4.52",
+      "cost": "RUB 173235",
+      "short": false,
+      "lastBuy": "2026-11-10T17:00:00.000+03:00",
+      "ledger": {
+        "ticker": "LKOH",
+        "asset": "STOCK",
+        "qty": 30,
+        "ops": {
+          "SELL": 12,
+          "BUY": 15
+        }
+      }
+    },
+    {
+      "id": 1137,
+      "ticker": "MGNT",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-09-08T17:33:00.000+03:00",
+      "ledger": {
+        "ticker": "MGNT",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "BUY": 2,
+          "SELL": 2
+        }
+      }
+    },
+    {
+      "id": 12786,
+      "ticker": "OZON",
+      "asset": "STOCK",
+      "qty": "50",
+      "openQty": "50",
+      "weight": "4.47",
+      "cost": "RUB 171475",
+      "short": false,
+      "lastBuy": "2026-10-11T10:44:00.000+03:00",
+      "ledger": {
+        "ticker": "OZON",
+        "asset": "STOCK",
+        "qty": 50,
+        "ops": {
+          "SELL": 7,
+          "BUY": 10
+        }
+      }
+    },
+    {
+      "id": 141808,
+      "ticker": "MMZ5",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2025-12-16T10:51:00.000+03:00",
+      "ledger": {
+        "ticker": "MMZ5",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "VARIATION_MARGIN_LOSS": 2,
+          "BUY": 5,
+          "VARIATION_MARGIN_INCOME": 4,
+          "SELL": 6
+        }
+      }
+    },
+    {
+      "id": 1012,
+      "ticker": "AFLT",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-06-01T15:52:00.000+03:00",
+      "ledger": {
+        "ticker": "AFLT",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 1013,
+      "ticker": "AFKS",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-09-14T21:40:00.000+03:00",
+      "ledger": {
+        "ticker": "AFKS",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 4,
+          "BUY": 3
+        }
+      }
+    },
+    {
+      "id": 234101,
+      "ticker": "T",
+      "asset": "STOCK",
+      "qty": "1000",
+      "openQty": "1000",
+      "weight": "7.25",
+      "cost": "RUB 277940",
+      "short": false,
+      "lastBuy": "2026-11-11T16:46:00.000+03:00",
+      "ledger": {
+        "ticker": "T",
+        "asset": "STOCK",
+        "qty": 1000,
+        "ops": {
+          "BUY": 2,
+          "SELL": 1
+        }
+      }
+    },
+    {
+      "id": 1272,
+      "ticker": "PHOR",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-04-07T21:16:00.000+03:00",
+      "ledger": {
+        "ticker": "PHOR",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 2,
+          "BUY": 2
+        }
+      }
+    },
+    {
+      "id": 319608,
+      "ticker": "PTZ6",
+      "asset": "ASSET",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-07-29T13:59:00.000+03:00",
+      "ledger": {
+        "ticker": "PTZ6",
+        "asset": "ASSET",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "VARIATION_MARGIN_LOSS": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 170111,
+      "ticker": "LEAS",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-04-10T13:28:00.000+03:00",
+      "ledger": {
+        "ticker": "LEAS",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 8,
+          "DIVIDEND": 1
+        }
+      }
+    },
+    {
+      "id": 1278,
+      "ticker": "VSMO",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": false,
+      "lastBuy": "2026-10-21T16:47:00.000+03:00",
+      "ledger": {
+        "ticker": "VSMO",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "SELL": 1,
+          "BUY": 1
+        }
+      }
+    },
+    {
+      "id": 297082,
+      "ticker": "DOMRF",
+      "asset": "STOCK",
+      "qty": "100",
+      "openQty": "100",
+      "weight": "5.62",
+      "cost": "RUB 215380",
+      "short": false,
+      "lastBuy": "2026-10-15T10:18:00.000+03:00",
+      "ledger": {
+        "ticker": "DOMRF",
+        "asset": "STOCK",
+        "qty": 100,
+        "ops": {
+          "BUY": 4,
+          "SELL": 4
+        }
+      }
+    },
+    {
+      "id": 1150,
+      "ticker": "MAGN",
+      "asset": "STOCK",
+      "qty": "0",
+      "openQty": "0",
+      "weight": "0.00",
+      "cost": "RUB 0",
+      "short": true,
+      "lastBuy": "2026-03-02T11:34:00.000+03:00",
+      "ledger": {
+        "ticker": "MAGN",
+        "asset": "STOCK",
+        "qty": 0,
+        "ops": {
+          "BUY": 8,
+          "SELL": 8
+        }
+      }
+    },
+    {
+      "id": 101236,
+      "ticker": "RUB",
+      "asset": "MONEY",
+      "qty": "62.51",
+      "openQty": "62.50709994",
+      "weight": "0.00",
+      "cost": "RUB 62.51",
+      "short": false,
+      "lastBuy": "2026-11-13T18:27:00.000+03:00",
+      "ledger": {
+        "ticker": "Деньги (RUB)",
+        "asset": "MONEY",
+        "qty": 0,
+        "ops": {
+          "BUY": 1
+        }
+      }
+    }
+  ],
+  "unmatchedLedger": []
+}
